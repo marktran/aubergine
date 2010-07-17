@@ -1,17 +1,12 @@
-
-/**
- * Module dependencies.
- */
+// aubergine.js : Mark Tran <mark@nirv.net>
 
 var express = require('express'),
-    connect = require('connect');
-
-// Create and export Express app
+    connect = require('connect'),
+    sys = require('sys');
 
 var app = express.createServer();
 
-// Configuration
-
+// configuration
 app.configure(function(){
     app.set('views', __dirname + '/views');
     app.use('/', connect.bodyDecoder());
@@ -22,16 +17,16 @@ app.configure(function(){
 
 app.configure('development', function(){
     app.set('reload views', 1000);
-    app.use('/', connect.errorHandler({ dumpExceptions: true, showStack: true })); 
+    app.use('/', connect.errorHandler({ dumpExceptions: true, showStack: true }));
+    app.use('/', connect.logger())
 });
 
 app.configure('production', function(){
    app.use('/', connect.errorHandler()); 
 });
 
-// Routes
-
-app.get('/', function(req, res){
+// routes
+app.get('/', function(req, res) {
     res.render('index.haml', {
         locals: {
             title: 'aubergine'
