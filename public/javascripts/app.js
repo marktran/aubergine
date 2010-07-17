@@ -17,9 +17,9 @@ function initialize() {
             marker = new google.maps.Marker({
                 position: initialLocation, 
                 map: map, 
-                title: "W3C Geolocation"
+                title: "W3C Geolocation",
             });
-            attachInfoWindow(map, marker, marker.title);
+            attachInfoWindow(marker, marker.title);
         }, function() {
             handleNoGeolocation();
         });
@@ -28,22 +28,21 @@ function initialize() {
     }
 }
 
-function attachInfoWindow(map, marker, contentString) {
+function attachInfoWindow(marker, contentString) {
     var infowindow = new google.maps.InfoWindow({
-        content: "<p>" + contentString + "</p>"
+        content: "<p>" + marker.title + "</p>"
     });
 
     google.maps.event.addListener(marker, 'click', function() {
-        infowindow.open(map, marker);
+        infowindow.open(marker.map, marker);
     });
 }
 
 function handleNoGeolocation() {
     // default to San Francisco
     initialLocation = new google.maps.LatLng(37, 122);
-    contentString = "Error: The Geolocation service failed.";
     map.setCenter(initialLocation);
-    infowindow.setContent(contentString);
+    infowindow.setContent("Error: The Geolocation service failed.");
     infowindow.setPosition(initialLocation);
     infowindow.open(map);
 }
