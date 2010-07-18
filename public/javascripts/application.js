@@ -1,7 +1,7 @@
 function initialize() {
   var latitude, longitude;
 
-  map = new google.maps.Map(document.getElementById("map_canvas"), {
+  map = new google.maps.Map(document.getElementById('map_canvas'), {
     mapTypeControl: false,
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     zoom: 16,
@@ -18,7 +18,7 @@ function initialize() {
                   false,
                   true);
 
-      $.getJSON("/ajax/yelp/locations", {
+      $.getJSON('/ajax/yelp/locations', {
         latitude: latitude,
         longitude: longitude,
       }, function(data) {
@@ -30,18 +30,18 @@ function initialize() {
         });
       });
     }, function() {
-      handleNoGeolocation();
+      handleGeolocationError(error);
     });
   } else {
-    handleNoGeolocation();
+    handleGeolocationError(error);
   }
 }
 
 function setupMarker(title, latitude, longitude, rating, center) {
-  var infowindow, marker, position, rating_hash;
+  var icon, infowindow, marker, position, rating_hash;
 
+  // set custom icon for marker depending on rating
   rating_hash = {
-    0: 'green',
     1: 'blue',
     2: 'purple',
     3: 'orange',
@@ -49,11 +49,17 @@ function setupMarker(title, latitude, longitude, rating, center) {
     5: 'red',
   }
 
+  if (rating !== false) {
+    icon = 'http://maps.google.com/mapfiles/ms/icons/' +
+          rating_hash[Math.floor(rating)] +
+          '-dot.png'
+  } else {
+    icon = '/images/blue_dot_circle.png'
+  }
+
   position = new google.maps.LatLng(latitude, longitude);
   marker = new google.maps.Marker({
-    icon: 'http://maps.google.com/mapfiles/ms/icons/' +
-          rating_hash[Math.floor(rating)] +
-          '-dot.png',
+    icon: icon,
     map: map,
     position: position,
     title: title,
@@ -66,7 +72,7 @@ function setupMarker(title, latitude, longitude, rating, center) {
 
   // add listener for InfoWindow
   infowindow = new google.maps.InfoWindow({
-    content: "<p>" + marker.title + "</p>",
+    content: '<p>' + marker.title + '</p>',
     state: 0,
   });
   google.maps.event.addListener(marker, 'click', function() {
@@ -82,11 +88,13 @@ function setupMarker(title, latitude, longitude, rating, center) {
   return marker, infowindow;
 }
 
-function handleNoGeolocation() {
-  var marker, infowindow;
-
-  // default to San Francisco
-  marker, infowindow = setupMarker("San Franciso", 37, -122, false, true);
-  infowindow.setContent("Error: The Geolocation service failed.");
-  infowindow.open(marker.map);
+function handleGeolocationError(error) {
+  switch (error.code) {
+    case error.PERMISSION_DENIED:
+      alert("Permission denied.");
+      break;
+    default:
+      alert("Unknown error.");
+      break;
+  }
 }
