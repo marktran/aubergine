@@ -40,26 +40,9 @@ function initialize() {
 function setupMarker(title, latitude, longitude, rating, center) {
   var icon, infowindow, marker, position, rating_hash;
 
-  // set custom icon for marker depending on rating
-  rating_hash = {
-    1: 'blue',
-    2: 'purple',
-    3: 'orange',
-    4: 'yellow',
-    5: 'red',
-  }
-
-  if (rating !== false) {
-    icon = 'http://maps.google.com/mapfiles/ms/icons/' +
-          rating_hash[Math.floor(rating)] +
-          '-dot.png'
-  } else {
-    icon = '/images/blue_dot_circle.png'
-  }
-
   position = new google.maps.LatLng(latitude, longitude);
   marker = new google.maps.Marker({
-    icon: icon,
+    icon: '/images/' + Math.floor(rating) + '-dot.png',
     map: map,
     position: position,
     title: title,

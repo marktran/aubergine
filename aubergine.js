@@ -41,14 +41,14 @@ app.get('/', function(req, res) {
 
 function getYelpData(latitude, longitude, fn) {
   var client = http.createClient(80, 'api.yelp.com'),
-  req = client.request('GET',
-                       '/business_review_search?term=restaurants&lat=' +
-                       latitude +
-                       '&long=' +
-                       longitude +
-                       '&radius=0.5&limit=20&ywsid=' +
-                       app.set('api_key'),
-                       { host: 'api.yelp.com' });
+      req = client.request('GET',
+                           '/business_review_search?term=restaurants&lat=' +
+                           latitude +
+                           '&long=' +
+                           longitude +
+                           '&radius=0.5&limit=20&ywsid=' +
+                           app.set('api_key'),
+                           { host: 'api.yelp.com' });
   req.addListener('response', function(res) {
     res.body = '';
     res.addListener('data', function(chunk) {
