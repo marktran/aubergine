@@ -1,2 +1,3 @@
 *.css
 private/
+public/stylesheets/.sass-cache/
