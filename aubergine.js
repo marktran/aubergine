@@ -12,6 +12,8 @@ var app = express.createServer(
 // configuration
 app.configure(function(){
   app.set('views', __dirname + '/views');
+  app.set('api_key', fs.readFileSync(__dirname + '/private/yelp.key',
+                                     'utf8').replace('\n', ''));
   app.use('/', connect.bodyDecoder());
   app.use('/', connect.methodOverride());
   app.use('/', connect.compiler({ src: __dirname + '/public',
@@ -44,9 +46,10 @@ function getYelpData(latitude, longitude, fn) {
                        latitude +
                        '&long=' +
                        longitude +
-                       '&radius=0.5&limit=20&ywsid=XXX',
-                       { host: 'api.yelp.com' })
-  req.addListener('response', function(res){
+                       '&radius=0.5&limit=20&ywsid=' +
+                       app.set('api_key'),
+                       { host: 'api.yelp.com' });
+  req.addListener('response', function(res) {
     res.body = '';
     res.addListener('data', function(chunk) {
       res.body += chunk;
@@ -74,7 +77,7 @@ app.get('/ajax/yelp/locations', function(req, res) {
   latitude = req.params.get.latitude;
   longitude = req.params.get.longitude;
 
-  getLocalYelpData(latitude, longitude, function(data) {
+  getYelpData(latitude, longitude, function(data) {
     for (item in data.businesses) {
       business = data.businesses[item];
       locations.push({
