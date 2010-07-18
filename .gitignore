@@ -1,3 +1,5 @@
 *.css
+logs/
+pids/
 private/
 public/stylesheets/.sass-cache/
