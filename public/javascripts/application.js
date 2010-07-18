@@ -30,10 +30,10 @@ function initialize() {
         });
       });
     }, function() {
-      handleGeolocationError(error);
+      handleGeolocationError(err);
     });
   } else {
-    handleGeolocationError(error);
+    handleGeolocationError(err);
   }
 }
 
@@ -71,9 +71,9 @@ function addMarker(title, latitude, longitude, rating, center) {
   return marker, infowindow;
 }
 
-function handleGeolocationError(error) {
-  switch (error.code) {
-    case error.PERMISSION_DENIED:
+function handleGeolocationError(err) {
+  switch (err.code) {
+    case err.PERMISSION_DENIED:
       alert("Permission denied.");
       break;
     default:
