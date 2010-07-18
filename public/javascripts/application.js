@@ -12,7 +12,7 @@ function initialize() {
     navigator.geolocation.getCurrentPosition(function(position) {
       latitude = position.coords.latitude;
       longitude = position.coords.longitude;
-      setupMarker("W3C Geolocation",
+      addMarker("W3C Geolocation",
                   latitude,
                   longitude,
                   false,
@@ -23,7 +23,7 @@ function initialize() {
         longitude: longitude,
       }, function(data) {
         $.each(data.items, function(index, location) {
-          setupMarker(location.name,
+          addMarker(location.name,
                       location.latitude,
                       location.longitude,
                       location.rating);
@@ -37,7 +37,7 @@ function initialize() {
   }
 }
 
-function setupMarker(title, latitude, longitude, rating, center) {
+function addMarker(title, latitude, longitude, rating, center) {
   var icon, infowindow, marker, position, rating_hash;
 
   position = new google.maps.LatLng(latitude, longitude);
