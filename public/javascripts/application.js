@@ -24,9 +24,9 @@ function initialize() {
       }, function(data) {
         $.each(data.items, function(index, location) {
           addMarker(location.name,
-                      location.latitude,
-                      location.longitude,
-                      location.rating);
+                    location.latitude,
+                    location.longitude,
+                    location.rating);
         });
       });
     }, function() {

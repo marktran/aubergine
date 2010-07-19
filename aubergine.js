@@ -6,9 +6,7 @@ var express = require('express'),
     sys = require('sys'),
     Yelp = require('node-yelp/lib/yelp').Yelp;
 
-var app = express.createServer(
-  connect.logger()
-);
+var app = express.createServer(connect.logger());
 
 // configuration
 app.configure(function(){
@@ -63,7 +61,7 @@ app.get('/ajax/yelp/locations', function(req, res) {
     radius: 0.5,
     limit: 20,
   }, function(data) {
-    for (item in data.businesses) {
+    for (var item in data.businesses) {
       business = data.businesses[item];
       locations.push({
         name: business.name,
