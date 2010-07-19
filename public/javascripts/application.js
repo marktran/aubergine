@@ -36,6 +36,7 @@ function initialize() {
     handleGeolocationError(err);
   }
 }
+google.maps.event.addDomListener(window, 'load', initialize);
 
 function addMarker(title, latitude, longitude, rating, center) {
   var icon, infowindow, marker, position, rating_hash;
