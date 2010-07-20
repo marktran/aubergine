@@ -46,7 +46,7 @@ function loadTestData(latitude, longitude, fn) {
   var data = JSON.parse(fs.readFileSync(__dirname + '/private/yelp.json',
                                         'utf8'));
   fn(data);
-}
+};
 
 app.get('/ajax/yelp/locations', function(req, res) {
   var latitude, longitude, locations = [];

@@ -2,9 +2,11 @@ function initialize() {
   var latitude, longitude;
 
   map = new google.maps.Map(document.getElementById('map_canvas'), {
+    // center on Lebanon, Kansas, the geographical center of the United States
+    center: new google.maps.LatLng(39.813620, -98.554209),
     mapTypeControl: false,
     mapTypeId: google.maps.MapTypeId.ROADMAP,
-    zoom: 16,
+    zoom: 5,
   });
 
   // try W3C Geolocation
@@ -35,7 +37,7 @@ function initialize() {
   } else {
     handleGeolocationError(err);
   }
-}
+};
 google.maps.event.addDomListener(window, 'load', initialize);
 
 function addMarker(title, latitude, longitude, rating, center) {
@@ -52,6 +54,7 @@ function addMarker(title, latitude, longitude, rating, center) {
   // center marker if last parameter is true
   if (center !== undefined) {
     map.setCenter(position);
+    map.setZoom(16);
   }
 
   // add listener for InfoWindow
@@ -70,7 +73,7 @@ function addMarker(title, latitude, longitude, rating, center) {
   });
 
   return marker, infowindow;
-}
+};
 
 function handleGeolocationError(err) {
   switch (err.code) {
@@ -81,4 +84,4 @@ function handleGeolocationError(err) {
       alert("Unknown error.");
       break;
   }
-}
+};
