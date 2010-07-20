@@ -74,4 +74,4 @@ app.get('/ajax/yelp/locations', function(req, res) {
   });
 });
 
-app.listen(3000);
+app.listen(9090, '127.0.0.1');
