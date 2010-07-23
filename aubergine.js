@@ -51,8 +51,8 @@ function loadTestData(latitude, longitude, fn) {
 app.get('/ajax/yelp/reviews', function(req, res) {
   var latitude, longitude, locations = [];
 
-  latitude = req.params.get.latitude;
-  longitude = req.params.get.longitude;
+  latitude = req.param('latitude');
+  longitude = req.param('longitude');
 
   yelp.search('review', {
     term: 'restaurants',
