@@ -1,3 +1,6 @@
+google.load('search', '1');
+google.maps.event.addDomListener(window, 'load', initialize);
+
 function initialize() {
   var latitude, longitude;
 
@@ -14,13 +17,22 @@ function initialize() {
     toggleStatusMessage("Gathering information on your location...");
 
     navigator.geolocation.getCurrentPosition(function(position) {
-      latitude = position.coords.latitude;
+      latitude = position.coords.latitude; 
       longitude = position.coords.longitude;
       addMarker("W3C Geolocation",
                   latitude,
                   longitude,
                   false,
                   true);
+
+      googleLocalSearch(latitude, longitude, function(data) {
+        $.each(data, function(index, location) {
+          addMarker(location.title,
+                    location.lat,
+                    location.lng,
+                    1);
+        });
+      });
 
       $.getJSON('/ajax/yelp/reviews', {
         latitude: latitude,
@@ -42,7 +54,27 @@ function initialize() {
     handleGeolocationError(err);
   }
 };
-google.maps.event.addDomListener(window, 'load', initialize);
+
+function googleLocalSearch(latitude, longitude, callback) {
+  var search = new google.search.LocalSearch(),
+      results = [];
+
+  search.setCenterPoint(new google.maps.LatLng(latitude, longitude));
+  search.setResultSetSize(google.search.Search.LARGE_RESULTSET);
+  search.setSearchCompleteCallback(this, function() {
+    if (search.results && search.results.length > 0) {
+      results = results.concat(search.results);
+    }
+
+    if (search.cursor && 
+        search.cursor.pages.length > search.cursor.currentPageIndex + 1) {
+      search.gotoPage(search.cursor.currentPageIndex + 1);
+    } else {
+      callback(results);
+    }
+  });
+  search.execute('restaurants');
+};
 
 function handleGeolocationError(err) {
   switch (err.code) {
