@@ -48,7 +48,7 @@ function loadTestData(latitude, longitude, fn) {
   fn(data);
 };
 
-app.get('/ajax/yelp/locations', function(req, res) {
+app.get('/ajax/yelp/reviews', function(req, res) {
   var latitude, longitude, locations = [];
 
   latitude = req.params.get.latitude;

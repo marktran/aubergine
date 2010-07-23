@@ -11,6 +11,8 @@ function initialize() {
 
   // try W3C Geolocation
   if (navigator.geolocation) {
+    toggleStatusMessage("Gathering information on your location...");
+
     navigator.geolocation.getCurrentPosition(function(position) {
       latitude = position.coords.latitude;
       longitude = position.coords.longitude;
@@ -20,7 +22,7 @@ function initialize() {
                   false,
                   true);
 
-      $.getJSON('/ajax/yelp/locations', {
+      $.getJSON('/ajax/yelp/reviews', {
         latitude: latitude,
         longitude: longitude,
       }, function(data) {
@@ -30,6 +32,8 @@ function initialize() {
                     location.longitude,
                     location.rating);
         });
+
+        toggleStatusMessage();
       });
     }, function() {
       handleGeolocationError(err);
@@ -39,6 +43,17 @@ function initialize() {
   }
 };
 google.maps.event.addDomListener(window, 'load', initialize);
+
+function handleGeolocationError(err) {
+  switch (err.code) {
+    case err.PERMISSION_DENIED:
+      alert("Permission denied.");
+      break;
+    default:
+      alert("Unknown error.");
+      break;
+  }
+};
 
 function addMarker(title, latitude, longitude, rating, center) {
   var icon, infowindow, marker, position, rating_hash;
@@ -75,13 +90,10 @@ function addMarker(title, latitude, longitude, rating, center) {
   return marker, infowindow;
 };
 
-function handleGeolocationError(err) {
-  switch (err.code) {
-    case err.PERMISSION_DENIED:
-      alert("Permission denied.");
-      break;
-    default:
-      alert("Unknown error.");
-      break;
+function toggleStatusMessage(message) {
+  if (message) {
+    $('#infomessage').text(message);
   }
+
+  $('#infobox').slideToggle('slow');
 };
