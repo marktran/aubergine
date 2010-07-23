@@ -17,7 +17,7 @@ function initialize() {
     toggleStatusMessage("Gathering information on your location...");
 
     navigator.geolocation.getCurrentPosition(function(position) {
-      latitude = position.coords.latitude; 
+      latitude = position.coords.latitude;
       longitude = position.coords.longitude;
       addMarker("W3C Geolocation",
                   latitude,
@@ -99,7 +99,7 @@ function addMarker(title, latitude, longitude, rating, center) {
   });
 
   // center marker if last parameter is true
-  if (center !== undefined) {
+  if (center == true) {
     map.setCenter(position);
     map.setZoom(16);
   }
