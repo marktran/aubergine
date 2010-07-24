@@ -46,6 +46,29 @@ function yelpReviewSearch(latitude, longitude, parameters, callback) {
   });
 };
 
+// This function is pretty retarded, but we make a massive amount of API calls
+// because:
+//
+// 1) The Google Local API only returns 32 results (8 per page). These results
+//    don't have ratings so we look up each individual result with a Yelp
+//    Review Search call (32 times). Each of those 32 calls gives us 20 Yelp
+//    results. Many of them are duplicates, but it fills the map out nicely.
+//    I could probably just not use the Google Local API and call the Yelp
+//    API against its own results, but Google is pretty lax about their API,
+//    so fuck it.
+//
+//    Adam: "whereas google is just like 'fuck it. go nuts. just put ads on it.'
+//
+// 2) The Yelp API really sucks. No really, I hope the Yelp API people die in a
+//    fire. We make an extra individual Yelp call with the location centered on
+//    our HTML5 Geolocation for the hell of it. It returns a couple extra
+//    results. TODO: call the Yelp API against its own results for shits and
+//    giggles.
+//
+//    Ian MacBean, Yelp PR: "Thanks Mark, we've kicked you up to 1000 calls.
+//    We tend not to be huge fans of these map-based sites that make calls
+//    based strictly on location with no search input, as they burn through
+//    calls with vigor."
 function fetchData(latitude, longitude, callback) {
   var locations = {};
 
@@ -85,95 +108,4 @@ function fetchData(latitude, longitude, callback) {
       callback(locations);
     });
   });
-};
-google.load('search', '1');
-google.maps.event.addDomListener(window, 'load', initialize);
-
-function initialize() {
-  var latitude, longitude;
-
-  map = new google.maps.Map(document.getElementById('map_canvas'), {
-    center: new google.maps.LatLng(39.813620, -98.554209),
-    mapTypeControl: false,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    zoom: 5,
-  });
-
-  if (navigator.geolocation) {
-    toggleStatusMessage("Gathering information on your location...");
-
-    navigator.geolocation.getCurrentPosition(function(position) {
-      latitude = position.coords.latitude;
-      longitude = position.coords.longitude;
-      addMarker("W3C Geolocation",
-                  latitude,
-                  longitude,
-                  false,
-                  true);
-
-      fetchData(latitude, longitude, function(data) {
-        $.each(data, function(index, location) {
-          addMarker(location.name,
-                    location.latitude,
-                    location.longitude,
-                    location.rating);
-        });
-        toggleStatusMessage();
-      });
-    }, function() {
-      handleGeolocationError(err);
-    });
-  } else {
-    handleGeolocationError(err);
-  }
-};
-
-function handleGeolocationError(err) {
-  switch (err.code) {
-    case err.PERMISSION_DENIED:
-      alert("Permission denied.");
-      break;
-    default:
-      alert("Unknown error.");
-      break;
-  }
-};
-function addMarker(title, latitude, longitude, rating, center) {
-  var icon, infowindow, marker, position, rating_hash;
-
-  position = new google.maps.LatLng(latitude, longitude);
-  marker = new google.maps.Marker({
-    icon: '/images/' + Math.floor(rating) + '-dot.png',
-    map: map,
-    position: position,
-    title: title,
-  });
-
-  if (center == true) {
-    map.setCenter(position);
-    map.setZoom(16);
-  }
-
-  infowindow = new google.maps.InfoWindow({
-    content: '<p>' + marker.title + '</p>',
-    state: 0,
-  });
-  google.maps.event.addListener(marker, 'click', function() {
-    if (infowindow.state) {
-      infowindow.close(marker.map, marker);
-      infowindow.state = 0;
-    } else {
-      infowindow.open(marker.map, marker);
-      infowindow.state = 1;
-    }
-  });
-
-  return marker, infowindow;
-};
-function toggleStatusMessage(message) {
-  if (message) {
-    $('#infomessage').text(message);
-  }
-
-  $('#infobox').slideToggle('slow');
 };
