@@ -150,6 +150,8 @@ function addMarker(title, latitude, longitude, rating, center) {
   });
 
   if (center == true) {
+    marker.setZIndex(999);
+    marker.setClickable(false);
     map.setCenter(position);
     map.setZoom(16);
   }
