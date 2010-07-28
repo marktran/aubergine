@@ -57,7 +57,7 @@ function yelpReviewSearch(latitude, longitude, parameters, callback) {
 //    API against its own results, but Google is pretty lax about their API,
 //    so fuck it.
 //
-//    Adam: "whereas google is just like 'fuck it. go nuts. just put ads on it.'
+//    Adam: "whereas google is just like 'fuck it. go nuts. just put ads on it.'"
 //
 // 2) The Yelp API really sucks. No really, I hope the Yelp API people die in a
 //    fire. We make an extra individual Yelp call with the location centered on
